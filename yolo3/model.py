@@ -11,8 +11,10 @@ from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras.regularizers import l2
 
-from yolo3.utils import compose
-
+try:
+    from keras_yolo3.yolo3.utils import compose
+except ImportError as e:
+    from yolo3.utils import compose
 
 @wraps(Conv2D)
 def DarknetConv2D(*args, **kwargs):
