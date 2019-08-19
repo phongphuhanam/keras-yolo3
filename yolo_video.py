@@ -1,19 +1,25 @@
-import sys
+import sys, os
+import time
 import argparse
 from yolo import YOLO, detect_video
 from PIL import Image
 
 def detect_img(yolo):
     while True:
-        img = input('Input image filename:')
         try:
+            img = input('Input image filename:')
+            beginTime = time.time()
             image = Image.open(img)
+            r_image = yolo.detect_image(image)
+            r_image.show()
+            procTime = time.time() - beginTime
+            print("Fps {}".format(1/procTime))
+        except KeyboardInterrupt:
+            print(os.linesep + "Exit")
+            break
         except:
             print('Open Error! Try again!')
             continue
-        else:
-            r_image = yolo.detect_image(image)
-            r_image.show()
     yolo.close_session()
 
 FLAGS = None
@@ -60,6 +66,16 @@ if __name__ == '__main__':
         "--output", nargs='?', type=str, default="",
         help = "[Optional] Video output path"
     )
+
+    import tensorflow as tf
+    from keras.backend.tensorflow_backend import set_session
+
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+    config.log_device_placement = False  # to log device placement (on which device the operation ran)
+    # (nothing gets printed in Jupyter, only if you run it standalone)
+    sess = tf.Session(config=config)
+    set_session(sess)  # set this TensorFlow session as the default session for Keras
 
     FLAGS = parser.parse_args()
 
