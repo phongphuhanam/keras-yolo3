@@ -106,3 +106,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#test image
+!dog.jpg
+!0001.jpg
